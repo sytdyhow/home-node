@@ -2,7 +2,6 @@
 
 import express from "express";
 import { UsersEntity } from "../../entities/users-entity";
-import { And } from "typeorm";
 
 const router = express.Router();
 

@@ -4,7 +4,7 @@ import { SystemsEntity } from "../../entities/systems-entity"
 const router =express.Router();
 
 
-router.delete("/system/:systemId", async (req,res)=>{
+router.delete("/systems/:systemId", async (req,res)=>{
     const {systemId}=req.params;
 
     const response=await SystemsEntity.delete(parseInt(systemId));

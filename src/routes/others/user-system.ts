@@ -6,7 +6,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { RolesEntity } from "../../entities/roles-entity";
 
 const router = express.Router();
-router.get('/user-system', async (req, res) => {
+router.get('/user-systems', async (req, res) => {
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1]!;
   const decodedToken = jwt.verify(token, 'system') as JwtPayload;

@@ -2,11 +2,12 @@ import express from "express";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { UsersEntity } from "../../entities/users-entity";
-import { UserLogsEntity } from "../../entities/user-logtable";
+const cors = require('cors');
+
 
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
+router.post('/login', cors() ,async (req, res) => {
   const { username, password } = req.body;
 
   try {

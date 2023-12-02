@@ -3,7 +3,7 @@ import { RolesEntity } from "../../entities/roles-entity";
 
 const router =express.Router();
 
-  router.post('/role',async (req,res)=>{
+  router.post('/roles',async (req,res)=>{
     const{ name }=req.body;
 
     const roles= RolesEntity.create({

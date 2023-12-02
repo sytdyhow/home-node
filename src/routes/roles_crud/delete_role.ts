@@ -4,7 +4,7 @@ import { RolesEntity } from '../../entities/roles-entity';
 const router =express.Router();
 
 
-router.delete("/role/:roleId", async (req,res)=>{
+router.delete("/roles/:roleId", async (req,res)=>{
     const {roleId}=req.params;
 
     const response=await RolesEntity.delete(parseInt(roleId));

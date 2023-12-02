@@ -3,7 +3,7 @@ import { RolesEntity } from "../../entities/roles-entity";
 
 const router = express.Router();
 
-router.put("/role/:id", async (req, res) => {
+router.put("/roles/:id", async (req, res) => {
   const { id } = req.params;
 
   try {

@@ -25,7 +25,7 @@ import { UserSystemRouter } from "./routes/others/user-system";
 import { UserLogsEntity } from "./entities/user-logtable";
 require('dotenv').config();
 const cors = require('cors');
-// var mysql = require('mysql');
+
 
 
 const app = express();
@@ -45,8 +45,9 @@ const main = async () => {
     });
 
     console.log("Connected to the database");
-
+    app.use(cors())
     app.use(express.json());
+
     app.use(createRulerouter)
     app.use(deleteRulerouter)
     app.use(getRulerouter)
@@ -65,10 +66,10 @@ const main = async () => {
     app.use(deleteUserRouter)
     app.use(loginRouter)
     app.use(UserSystemRouter)
-    app.use(cors());
-    // app.use(mysql)
+
+
     app.listen(9000, () => {
-      console.log("Running on port 8000");
+      console.log("Running on port 9000");
     });
   } catch (error) {
     console.log("Unable to connect to the database");

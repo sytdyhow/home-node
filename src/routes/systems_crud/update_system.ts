@@ -3,7 +3,7 @@ import { SystemsEntity } from "../../entities/systems-entity"
 
 const router = express.Router();
 
-router.put("/system/:id", async (req, res) => {
+router.put("/systems/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
