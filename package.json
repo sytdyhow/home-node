@@ -6,7 +6,7 @@
   "scripts": {
     "server": "nodemon index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": " nodemon --watch app --watch libs ./src/index.ts",
+    "dev": " nodemon --watch ./**/*.ts --exec npx ts-node ./src/index.ts",
     "migration:generate": "npm run typeorm migration:generate -- -d src/data-source.ts"
   },
   "keywords": [],

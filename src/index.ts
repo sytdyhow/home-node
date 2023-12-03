@@ -23,6 +23,7 @@ import { deleteUserRouter } from "./routes/users_crud/delete_user";
 import { loginRouter } from "./routes/others/login";
 import { UserSystemRouter } from "./routes/others/user-system";
 import { UserLogsEntity } from "./entities/user-logtable";
+import { Whoami } from "./routes/others/whoami";
 require('dotenv').config();
 const cors = require('cors');
 
@@ -47,7 +48,7 @@ const main = async () => {
     console.log("Connected to the database");
     app.use(cors())
     app.use(express.json());
-
+ 
     app.use(createRulerouter)
     app.use(deleteRulerouter)
     app.use(getRulerouter)
@@ -66,6 +67,7 @@ const main = async () => {
     app.use(deleteUserRouter)
     app.use(loginRouter)
     app.use(UserSystemRouter)
+    app.use(Whoami)
 
 
     app.listen(9000, () => {
