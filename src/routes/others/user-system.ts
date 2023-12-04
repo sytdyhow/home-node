@@ -24,7 +24,7 @@ router.get('/user-systems', async (req, res) => {
     const userMenu =
       {
        label: "Admin Panel",
-       link:"admin-panel/users",
+       link:"/admin-panel/users",
        icon:""
       }
 
