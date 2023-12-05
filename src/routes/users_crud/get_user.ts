@@ -25,7 +25,7 @@ router.get('/users', async (req, res) => {
     };
   });
 
-  return res.json(activeUsers);
+  return res.send({results: activeUsers});
 });
 
 export { router as getUserRouter };

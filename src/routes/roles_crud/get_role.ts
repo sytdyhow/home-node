@@ -6,7 +6,7 @@ const router =express.Router();
 
 router.get ('/roles',async (req,res)=>{
     const roles =await RolesEntity.find();
-    return res.json(roles)
+    return res.send({results:roles})
 
 })
 export { router as getRolerouter}

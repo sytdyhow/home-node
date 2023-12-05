@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/systems', async (req, res) => {
   const systems = await SystemsEntity.find();
   const activeSystems = systems.filter((system) => system.is_active === true);
-  return res.json(activeSystems);
+  return res.send({results: activeSystems});
 });
 
 export { router as getSystemrouter };
