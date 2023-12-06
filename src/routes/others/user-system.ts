@@ -6,53 +6,52 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { RolesEntity } from "../../entities/roles-entity";
 
 const router = express.Router();
+
 router.get('/user-systems', async (req, res) => {
   const auth = req.headers.authorization;
-  const token = auth?.split(" ")[1]!;
-  const decodedToken = jwt.verify(token, 'system') as JwtPayload;
-  const users_id = decodedToken.id;
+  const token = auth?.split(" ")[1];
+  
+  if (!token) {
+    return res.status(401).json({ error: "Missing token" });
+  }
 
-  const systems = await getRepository(SystemsEntity)
-    .createQueryBuilder('systems')
-    .innerJoin('users_systems', 'us', 'systems.id = us.system_id')
-    .where('us.user_id = :id', { id: users_id }) 
-    .getMany();
+  try {
+    const decodedToken = jwt.verify(token, 'system') as JwtPayload;
+    const users_id = decodedToken.id;
 
+    const systems = await getRepository(SystemsEntity)
+      .createQueryBuilder('systems')
+      .innerJoin('users_systems', 'us', 'systems.id = us.system_id')
+      .where('us.user_id = :id', { id: users_id })
+      .getMany();
 
+    const userMenu = {
+      label: "Admin Panel",
+      link: "/admin-panel/users",
+      icon: ""
+    }
 
-
-    const userMenu =
-      {
-       label: "Admin Panel",
-       link:"/admin-panel/users",
-       icon:""
-      }
-
-
-     
-      const user = await getRepository(UsersEntity)
+    const user = await getRepository(UsersEntity)
       .createQueryBuilder('users')
       .select(['users.username'])
       .where('users.id = :id', { id: users_id })
       .getOne();
-    
+
     const role = await getRepository(RolesEntity)
       .createQueryBuilder('roles')
-    //   .select(['roles.name'])
-      .innerJoin('users_roles','rol','roles.id=rol.roles_id')
+      .innerJoin('users_roles', 'rol', 'roles.id = rol.roles_id')
       .where('rol.users_id = :id', { id: users_id })
-       .getMany();
-    
+      .getMany();
+
     const userDetails = {
-     user,role
+      user,
+      role
     };
 
-
-
-
-
-        return res.json({systems,userMenu,userDetails});
-  
+    return res.json({ systems, userMenu, userDetails });
+  } catch (error) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
 });
 
 export {

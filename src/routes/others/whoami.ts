@@ -5,36 +5,35 @@ import { UsersEntity } from "../../entities/users-entity";
 import { getRepository } from "typeorm";
 
 const router = express.Router();
+
 router.get('/whoami', async (req, res) => {
   const auth = req.headers.authorization;
-  const token = auth?.split(" ")[1]!;
-  const decodedToken = jwt.verify(token, 'system') as JwtPayload;
-  const users_id = decodedToken.id;
+  const token = auth?.split(" ")[1];
 
-   
-  const user = await getRepository(UsersEntity)
-  .createQueryBuilder('users')
-  .select(['users.id','users.username'])
-  .where('users.id = :id', { id: users_id })
-  .getOne();
+  if (!token) {
+    return res.status(401).json({ error: "Missing token" });
+  }
 
-const role = await getRepository(RolesEntity)
-  .createQueryBuilder('roles')
-//   .select(['roles.name'])
-  .innerJoin('users_roles','rol','roles.id=rol.roles_id')
-  .where('rol.users_id = :id', { id: users_id })
-   .getMany();
+  try {
+    const decodedToken = jwt.verify(token, 'system') as JwtPayload;
+    const users_id = decodedToken.id;
 
-// const userDetails = {
-//  user,role
-// };
+    const user = await getRepository(UsersEntity)
+      .createQueryBuilder('users')
+      .select(['users.id', 'users.username'])
+      .where('users.id = :id', { id: users_id })
+      .getOne();
 
-  
+    const role = await getRepository(RolesEntity)
+      .createQueryBuilder('roles')
+      .innerJoin('users_roles', 'rol', 'roles.id = rol.roles_id')
+      .where('rol.users_id = :id', { id: users_id })
+      .getMany();
 
-
-
-        return res.json({user,role});
-  
+    return res.json({ user, role });
+  } catch (error) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
 });
 
 export {
