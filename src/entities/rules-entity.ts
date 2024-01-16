@@ -1,20 +1,22 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UsersEntity } from "./users-entity";
+// import { PairDetailsEntity } from "./pairdetails_entity";
 
-@Entity(
-    'rules'
-)
-
+@Entity('rules_table')
 export class RulesEntity extends BaseEntity{
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({
+        name: 'id',
+        type: 'integer'
+    })
     id:number
 
 
     @Column({
-        name:'ruleName',
+        name:'rule_name',
         type:'varchar'
     })
-    ruleName:string
+    rule_name:string
 
     @Column({
         name:'severity_in',
@@ -44,25 +46,6 @@ export class RulesEntity extends BaseEntity{
     })
     keywords:string
 
-
-    @Column({
-        name:'index',
-        type:'varchar'
-
-    })
-    index:string
-
-
-
-    @Column({
-        name:'splitter',
-        type:'varchar'
-
-    })
-    splitter:string
-
-
-
     @Column({
         name:'description',
         type:'varchar',
@@ -71,5 +54,33 @@ export class RulesEntity extends BaseEntity{
     })
     description:string
 
+    @Column({
+        name: 'deny_duplicate',
+        type: 'integer'
+    })
+    deny_duplicate:number
+
+    @Column({
+        name: 'interval',
+        type: 'integer'
+    })
+    interval:number
+   
     
+
+    // @ManyToMany(()=>UsersEntity,(userss)=>userss.rules)
+    // @JoinTable({
+    //     name:"users_rules",
+    //     joinColumn:{
+    //         name:'rules_id',
+    //         referencedColumnName:'id'
+    //     },
+    //     inverseJoinColumn:{
+    //         name:'users_id',
+    //         referencedColumnName:'id',
+    //     },
+    // })
+    // userss:UsersEntity[];
+
+
 }

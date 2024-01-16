@@ -15,14 +15,14 @@ router.put("/rule/:id", async (req, res) => {
     }
 
     // Update the rule properties
-    rule.ruleName = req.body.ruleName;
+    rule.rule_name = req.body.ruleName;
     rule.severity_in = req.body.severity_in;
     rule.severity_out = req.body.severity_out;
     rule.application = req.body.application;
     rule.keywords = req.body.keywords;
-    rule.index = req.body.index;
-    rule.splitter = req.body.splitter;
     rule.description = req.body.description;
+    rule.deny_duplicate = req.body.deny_duplicate;
+    rule.interval = req.body.interval;
 
     // Save the updated rule
     await rule.save();

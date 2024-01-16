@@ -6,7 +6,7 @@ import { RulesEntity } from "../../entities/rules-entity";
 
 const router = express.Router();
 
-router.get('/whoami', async (req, res) => {
+router.get('/users-rules', async (req, res) => {
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1];
 
@@ -17,8 +17,10 @@ router.get('/whoami', async (req, res) => {
   try {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const users_id = decodedToken.id;
+    
    
     
+
       
       const rule_id = await LogsDatasource
       .getRepository(PairsEntity)    
@@ -28,6 +30,8 @@ router.get('/whoami', async (req, res) => {
       .getMany()
 
      const rulesIds= rule_id.map((rl)=>rl.rule_id)
+
+     
     
       
       const rules =await LogsDatasource
@@ -36,14 +40,15 @@ router.get('/whoami', async (req, res) => {
       .select(['rules.id','rules.rule_name'])
       .where('rules.id IN(:...ids)',{ids:rulesIds})
       .getMany()
+ 
 
 
-    return res.json({ rules });
+    return res.json({rules });
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }
 });
 
 export {
-  router as Whoami
+  router as Users_rules
 };

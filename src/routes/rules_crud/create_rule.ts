@@ -5,31 +5,26 @@ const router =express.Router();
 
   router.post('/rules',async (req,res)=>{
     const{
-
-     ruleName,
-     severity_in,
-     severity_out,
-     application,
-     keywords,
-     index,
-     splitter,
-     description,
-      
+      rule_name,
+      severity_in,
+      severity_out,
+      application,
+      keywords,
+      description,
     }=req.body;
-
+  
     const rules= RulesEntity.create({
-    ruleName:ruleName,
-     severity_in:severity_in,
-     severity_out:severity_out,
-     application:application,
-     keywords:keywords,
-     index:index,
-     splitter:splitter,
-     description:description,
+      rule_name:rule_name,
+      severity_in:severity_in,
+      severity_out:severity_out,
+      application:application,
+      keywords:keywords,
+      description:description,
     })
     await rules.save();
     return res.json(rules)
-})
+  })
+  
 
 
 

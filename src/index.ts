@@ -24,6 +24,10 @@ import { loginRouter } from "./routes/others/login";
 import { UserSystemRouter } from "./routes/others/user-system";
 import { UserLogsEntity } from "./entities/user-logtable";
 import { Whoami } from "./routes/others/whoami";
+import { DataSource } from "typeorm";
+import LogsDatasource from "./database/logsdb";
+import { Users_rules } from "./routes/others/users-rules";
+
 require('dotenv').config();
 const cors = require('cors');
 
@@ -68,9 +72,20 @@ const main = async () => {
     app.use(loginRouter)
     app.use(UserSystemRouter)
     app.use(Whoami)
+    app.use(Users_rules)
+
+    
+const initializeDatasource = (DataSource: DataSource, message: string) =>{
+  DataSource.initialize().then(() => {
+      console.log(message)
+  }).catch((err) => {
+      console.error("Error during Data Source initialization", err)
+  })
+}
 
 
     app.listen(9000, () => {
+      initializeDatasource(LogsDatasource, "Datasource logs initialized")  
       console.log("Running on port 9000");
     });
   } catch (error) {

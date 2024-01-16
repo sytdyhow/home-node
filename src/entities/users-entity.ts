@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { SystemsEntity } from "./systems-entity";
 import { RolesEntity } from "./roles-entity";
+import { RulesEntity } from "./rules-entity";
 
 @Entity({
     name:'users'
@@ -50,5 +51,9 @@ export class UsersEntity extends BaseEntity{
 
     @ManyToMany(()=>RolesEntity,(roles)=>roles.userss)
     roles:RolesEntity[];
+
+    // @ManyToMany(()=>RulesEntity,(rules)=>rules.userss)
+    // rules:RulesEntity[];
+
 
 }

@@ -3,6 +3,7 @@ import { UsersEntity } from "../../entities/users-entity";
 import * as bcrypt from 'bcrypt'
 import { SystemsEntity } from "../../entities/systems-entity";
 import { RolesEntity } from "../../entities/roles-entity";
+import { RulesEntity } from "../../entities/rules-entity";
 
 const router = express.Router();
 
@@ -12,7 +13,8 @@ router.post('/users', async (req, res) => {
     password,
     is_active,
     systemId,
-    rolesId
+    rolesId,
+    // rulesId
   } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -33,7 +35,14 @@ router.post('/users', async (req, res) => {
         const entity=new RolesEntity();
         entity.id=role;
         return entity;
-      })
+      }),
+
+      // rules:req.body.rulesId.map((rule:number)=>{
+      //   const entity=new RulesEntity();
+      //   entity.id=rule;
+      //   return entity;
+      // })
+
 
 
   });
