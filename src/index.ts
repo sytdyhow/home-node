@@ -27,6 +27,7 @@ import { Whoami } from "./routes/others/whoami";
 import { DataSource } from "typeorm";
 import LogsDatasource from "./database/logsdb";
 import { Users_rules } from "./routes/others/users-rules";
+import { Roles_users } from "./routes/others/roles-users";
 
 require('dotenv').config();
 const cors = require('cors');
@@ -73,6 +74,7 @@ const main = async () => {
     app.use(UserSystemRouter)
     app.use(Whoami)
     app.use(Users_rules)
+    app.use(Roles_users)
 
     
 const initializeDatasource = (DataSource: DataSource, message: string) =>{
