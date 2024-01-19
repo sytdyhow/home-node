@@ -25,11 +25,6 @@ router.get('/user-systems', async (req, res) => {
       .where('us.user_id = :id', { id: users_id })
       .getMany();
 
-    const userMenu = {
-      label: "Admin Panel",
-      link: "/admin-panel/users",
-      icon: ""
-    }
 
     const user = await getRepository(UsersEntity)
       .createQueryBuilder('users')
@@ -48,7 +43,7 @@ router.get('/user-systems', async (req, res) => {
       role
     };
 
-    return res.json({ systems, userMenu, userDetails });
+    return res.json({ systems, userDetails });
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }

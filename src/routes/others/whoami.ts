@@ -27,16 +27,26 @@ router.get('/whoami', async (req, res) => {
       .where('users.id = :id', { id: users_id })
       .getOne();
 
+
+      
+    const userMenu = {
+      label: "Admin Panel",
+      link: "/admin-panel/users",
+      icon: ""
+    }
+
+
     const role = await getRepository(RolesEntity)
       .createQueryBuilder('roles')
       .innerJoin('users_roles', 'rol', 'roles.id = rol.roles_id')
       .where('rol.users_id = :id', { id: users_id })
       .getMany();
 
-    return res.json({ user, role });
+    return res.json({ user, role,userMenu });
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }
+  
 });
 
 export {
