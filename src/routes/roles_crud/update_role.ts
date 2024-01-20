@@ -9,22 +9,23 @@ router.put("/roles/:id", async (req, res) => {
   try {
     const role = await RolesEntity.findOneById(parseInt(id));
 
-    // Check if the rule exists
     if (!role) {
       return res.status(404).json({ error: "Role not found" });
     }
 
-    // Update the rule properties
     role.name = req.body.name;
    
-
-    // Save the updated rule
     await role.save();
 
-    return res.json({ success: true }); // Add return statement here
+    return res.json({
+       success: true,
+       body:role
+      
+      
+      }); 
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" }); // Add return statement here
+    return res.status(500).json({ error: "Internal server error" }); 
   }
 });
 

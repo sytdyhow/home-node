@@ -18,13 +18,17 @@ router.put("/systems/:id", async (req, res) => {
     system.name = req.body.name;
     system.url =req.body.url;
     system.description=req.body.description;
-    system.is_active=req.body.is_active
+    system.is_active=req.body.is_active;
+    system.icon=req.body.icon
 
   
     // Save the updated rule
     await system.save();
 
-    return res.json({ success: true }); // Add return statement here
+    return res.json({  
+      success: true ,
+      body: system              
+    }); // Add return statement here
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error" }); // Add return statement here
