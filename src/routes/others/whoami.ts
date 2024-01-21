@@ -28,6 +28,12 @@ router.get('/whoami', async (req, res) => {
       .getOne();
 
 
+      const role_id = await getRepository(UsersEntity)
+      .createQueryBuilder('users')
+      .select(['users.roles_id'])
+      .where('users.id = :id', { id: users_id })
+      .getOne();
+
    
 
 
@@ -37,11 +43,13 @@ router.get('/whoami', async (req, res) => {
       .where('rol.id = :id', { id: users_id })
       .getMany();
       
-
-
+      const roleId=role[0].id;
+      const rolename=role[0].name
+      
       
     
-      if(user?.id===users_id && user?.username==="admin"){
+
+       if(role_id?.roles_id===roleId && rolename==="admin"){
       
         let userMenu = {
           label: "Admin Panel",
