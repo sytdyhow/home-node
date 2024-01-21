@@ -57,13 +57,23 @@ router.put('/users/:id', async (req, res) => {
           return entity;
         });
 
+        const roles = await RolesEntity.find()
+        const roleObject = roles.find((role)=>user.roles_id===role.id)
+
         user.roles_id = role;
+        
 
         await user.save();
 
         return res.json({
           success: true,
-          body: user,
+          body: {
+            username: user.username,
+            role: roleObject,
+            systems:user.systems,
+            is_active: user.is_active,
+            data_joined: user.data_joined
+          },
         });
       } else {
         return res.status(400).json({ error: 'Passwords do not match' });
