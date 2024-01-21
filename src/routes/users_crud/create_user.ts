@@ -10,7 +10,7 @@ router.post('/users', async (req, res) => {
     username,
     password,
     is_active,
-    systemId,
+    system,
     rolesId,
   } = req.body;
 
@@ -22,7 +22,7 @@ router.post('/users', async (req, res) => {
     return res.status(400).json({ error: "Password is missing. Please provide a password." });
   }
 
-  if (!systemId || systemId.length === 0) {
+  if (!system || system.length === 0) {
     return res.status(400).json({ error: "Systems are missing. Please provide system IDs." });
   }
 
@@ -38,7 +38,7 @@ router.post('/users', async (req, res) => {
     is_active: is_active,
     data_joined: new Date(),
 
-    systems: systemId.map((systemm: number) => {
+    systems: system.map((systemm: number) => {
       const entity = new SystemsEntity();
       entity.id = systemm;
       return entity;
