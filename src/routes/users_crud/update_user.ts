@@ -26,7 +26,6 @@ router.put('/users/:id', async (req, res) => {
       if (!username) {
         return res.status(400).json({ error: 'Username is required' });
       }
-
   
       if (!systems || systems.length === 0) {
         return res.status(400).json({ error: 'System ID is required' });
@@ -35,44 +34,42 @@ router.put('/users/:id', async (req, res) => {
       if (!role || role.length ===0) {
         return res.status(400).json({ error: 'Roles ID is required' });
       }
+      
+      if (typeof password !== "undefined" && typeof confirm !== "undefined") {
+        if(password === confirm){
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(confirm, salt);
+          user.password = hashedPassword;
+        }else{
+          return res.status(400).json({ error: 'Passwords do not match' });
+        }
+      } 
+      
+      user.username = username;
+      user.is_active = is_active;
+      user.roles_id = role;
+      await user.save();
 
-      if (password === confirm) {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(confirm, salt);
+      const systemsArray = await SystemsEntity.find();
+      const systemObjectArray = systems.map((system_id:any)=>systemsArray.find((inArraySystem)=>system_id===inArraySystem.id))
 
-        user.username = username;
-        user.password = hashedPassword;
-        user.is_active = is_active;
+      const roles = await RolesEntity.find()
+      const roleObject = roles.find((role)=>user.roles_id===role.id)
 
-        const systemsArray = await SystemsEntity.find();
-        const systemObjectArray = systems.map((system_id:any)=>systemsArray.find((inArraySystem)=>system_id===inArraySystem.id))
-        
-
-        const roles = await RolesEntity.find()
-        const roleObject = roles.find((role)=>user.roles_id===role.id)
-
-        user.roles_id = role;
-        
-
-        await user.save();
-
-        return res.json({
-          success: true,
-          body: {
-            id:user.id,
-            username: user.username,
-            role: roleObject,
-            systems:systemObjectArray,
-            is_active: user.is_active,
-            data_joined: user.data_joined
-          },
-        });
-      } else {
-        return res.status(400).json({ error: 'Passwords do not match' });
-      }
+      return res.json({
+        success: true,
+        body: {
+          id:user.id,
+          username: user.username,
+          role: roleObject,
+          systems:systemObjectArray,
+          is_active: user.is_active,
+          data_joined: user.data_joined
+        },
+      });
     }
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to update user information' });
+    return res.status(500).json({ error: 'Failed to update user information', message: error });
   }
 });
 

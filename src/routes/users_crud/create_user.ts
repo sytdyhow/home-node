@@ -2,6 +2,7 @@ import express from "express";
 import { UsersEntity } from "../../entities/users-entity";
 import * as bcrypt from 'bcrypt'
 import { SystemsEntity } from "../../entities/systems-entity";
+import { RolesEntity } from "../../entities/roles-entity";
 
 const router = express.Router();
 
@@ -37,25 +38,30 @@ router.post('/users', async (req, res) => {
     password: hashedPassword, 
     is_active: is_active,
     data_joined: new Date(),
-
-    systems: system.map((systemm: number) => {
-      const entity = new SystemsEntity();
-      entity.id = systemm;
-      return entity;
-    }),
-
     roles_id: role
   });
 
+  const systemsArray = await SystemsEntity.find();
+  const systemObjectArray = system.map((system_id:any)=>systemsArray.find((inArraySystem)=>system_id===inArraySystem.id))
+
+  const roles = await RolesEntity.find()
+  const roleObject = roles.find((role)=>user.roles_id===role.id)
   try {
     await user.save();
     return res.json({
       success: true,
-      body: user,
+      body: {
+        
+        username: username,
+        role: roleObject,
+        systems:systemObjectArray,
+        is_active: is_active,
+        data_joined: new Date()
+      },
     });
   } catch (error) {
-    // Check if the error is a duplicate entry error
-    if (error.code === 'ER_DUP_ENTRY') {
+     // Check if the error is a duplicate entry error
+     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ error: "Username is already taken. Please choose a different username." });
     }
 
