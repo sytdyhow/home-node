@@ -27,14 +27,7 @@ router.put('/users/:id', async (req, res) => {
         return res.status(400).json({ error: 'Username is required' });
       }
 
-      if (!password) {
-        return res.status(400).json({ error: 'Password is required' });
-      }
-
-      if (!confirm) {
-        return res.status(400).json({ error: 'Confirmation password is required' });
-      }
-
+  
       if (!systems || systems.length === 0) {
         return res.status(400).json({ error: 'System ID is required' });
       }
@@ -51,11 +44,9 @@ router.put('/users/:id', async (req, res) => {
         user.password = hashedPassword;
         user.is_active = is_active;
 
-        user.systems = systems.map((systemm: number) => {
-          const entity = new SystemsEntity();
-          entity.id = systemm;
-          return entity;
-        });
+        const systemsArray = await SystemsEntity.find();
+        const systemObjectArray = systems.map((system_id:any)=>systemsArray.find((inArraySystem)=>system_id===inArraySystem.id))
+        
 
         const roles = await RolesEntity.find()
         const roleObject = roles.find((role)=>user.roles_id===role.id)
@@ -71,7 +62,7 @@ router.put('/users/:id', async (req, res) => {
             id:user.id,
             username: user.username,
             role: roleObject,
-            systems:user.systems,
+            systems:systemObjectArray,
             is_active: user.is_active,
             data_joined: user.data_joined
           },
