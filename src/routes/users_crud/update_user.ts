@@ -13,8 +13,8 @@ router.put('/users/:id', async (req, res) => {
     password,
     confirm,
     is_active,
-    systemId,
-    rolesId,
+    systems,
+    role,
   } = req.body;
 
   try {
@@ -35,11 +35,11 @@ router.put('/users/:id', async (req, res) => {
         return res.status(400).json({ error: 'Confirmation password is required' });
       }
 
-      if (!systemId || systemId.length === 0) {
+      if (!systems || systems.length === 0) {
         return res.status(400).json({ error: 'System ID is required' });
       }
 
-      if (!rolesId || rolesId.length ===0) {
+      if (!role || role.length ===0) {
         return res.status(400).json({ error: 'Roles ID is required' });
       }
 
@@ -51,13 +51,13 @@ router.put('/users/:id', async (req, res) => {
         user.password = hashedPassword;
         user.is_active = is_active;
 
-        user.systems = systemId.map((systemm: number) => {
+        user.systems = systems.map((systemm: number) => {
           const entity = new SystemsEntity();
           entity.id = systemm;
           return entity;
         });
 
-        user.roles_id = rolesId;
+        user.roles_id = role;
 
         await user.save();
 

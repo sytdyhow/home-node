@@ -15,11 +15,8 @@ router.get('/users', async (req, res) => {
   });
 
   const roles = await RolesEntity.find()
-  console.log(roles);
-  
-  
 
-  console.log("users",users);
+  
   
   const activeUsers = users.map((user) => {
     const { password, ...userWithoutPassword } = user;
