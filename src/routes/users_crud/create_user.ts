@@ -27,7 +27,7 @@ router.post('/users', async (req, res) => {
     return res.status(400).json({ error: "Systems are missing. Please provide system IDs." });
   }
 
-  if (!rolesId) {
+  if (!rolesId || rolesId.length ===0) {
     return res.status(400).json({ error: "Roles are missing. Please provide role IDs." });
   }
 
@@ -52,8 +52,21 @@ router.post('/users', async (req, res) => {
     }) : [],
   });
 
-  await user.save();
-  return res.json(user);
+  try {
+    await user.save();
+    return res.json({
+      success: true,
+      body: user,
+    });
+  } catch (error) {
+    // Check if the error is a duplicate entry error
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ error: "Username is already taken. Please choose a different username." });
+    }
+
+    // Return a generic error message for other types of errors
+    return res.status(500).json({ error: "An error occurred while creating the user." });
+  }
 });
 
 export {

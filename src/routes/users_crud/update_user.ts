@@ -11,10 +11,10 @@ router.put('/users/:id', async (req, res) => {
   const {
     username,
     password,
+    confirm,
     is_active,
     systemId,
     rolesId,
-    newPassword
   } = req.body;
 
   try {
@@ -23,34 +23,55 @@ router.put('/users/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     } else {
-      const checkPassword = await bcrypt.compare(password, user.password);
-
-      if (!checkPassword) {
-        return res.status(400).json({ error: 'User password is incorrect' });
+      if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
       }
 
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      if (!password) {
+        return res.status(400).json({ error: 'Password is required' });
+      }
 
-      user.username = username;
-      user.password = hashedPassword;
-      user.is_active = is_active;
+      if (!confirm) {
+        return res.status(400).json({ error: 'Confirmation password is required' });
+      }
 
-      user.systems = systemId.map((systemm: number) => {
-        const entity = new SystemsEntity();
-        entity.id = systemm;
-        return entity;
-      });
+      if (!systemId || systemId.length === 0) {
+        return res.status(400).json({ error: 'System ID is required' });
+      }
 
-      user.roles = rolesId.map((role: number) => {
-        const entity = new RolesEntity();
-        entity.id = role;
-        return entity;
-      });
+      if (!rolesId || rolesId.length ===0) {
+        return res.status(400).json({ error: 'Roles ID is required' });
+      }
 
-      await user.save();
+      if (password === confirm) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(confirm, salt);
 
-      return res.json(user);
+        user.username = username;
+        user.password = hashedPassword;
+        user.is_active = is_active;
+
+        user.systems = systemId.map((systemm: number) => {
+          const entity = new SystemsEntity();
+          entity.id = systemm;
+          return entity;
+        });
+
+        user.roles = rolesId.map((role: number) => {
+          const entity = new RolesEntity();
+          entity.id = role;
+          return entity;
+        });
+
+        await user.save();
+
+        return res.json({
+          success: true,
+          body: user,
+        });
+      } else {
+        return res.status(400).json({ error: 'Passwords do not match' });
+      }
     }
   } catch (error) {
     return res.status(500).json({ error: 'Failed to update user information' });

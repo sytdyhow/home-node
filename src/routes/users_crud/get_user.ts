@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.get('/users', async (req, res) => {
   const users = await UsersEntity.find({
-    where: {
-      is_active: true
-    },
+    // where: {
+    //   is_active: true
+    // },
     relations: ["systems", "roles"]
   });
 

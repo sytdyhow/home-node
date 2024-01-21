@@ -7,7 +7,7 @@ import { getRulerouter } from "./routes/rules_crud/get_rule";
 import { updateRuleRouter } from "./routes/rules_crud/update_rule";
 import { UsersEntity } from "./entities/users-entity";
 import { RolesEntity } from "./entities/roles-entity";
-import { createRolerouter } from "./routes/roles_crud/create_role";
+import { createRoleRouter } from "./routes/roles_crud/create_role";
 import { getRolerouter } from "./routes/roles_crud/get_role";
 import { deleteRolerouter } from "./routes/roles_crud/delete_role";
 import { updateRoleRouter } from "./routes/roles_crud/update_role";
@@ -59,7 +59,7 @@ const main = async () => {
     app.use(getRulerouter)
     app.use(updateRuleRouter)
     app.use(getRolerouter)
-    app.use(createRolerouter)
+    app.use(createRoleRouter)
     app.use(deleteRolerouter)
     app.use(updateRoleRouter)
     app.use(getSystemrouter)
