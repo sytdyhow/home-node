@@ -24,6 +24,7 @@ router.get('/user-systems', async (req, res) => {
       .innerJoin('users_systems', 'us', 'systems.id = us.system_id')
       .where('us.user_id = :id', { id: users_id })
       .getMany();
+      
 
 
     const user = await getRepository(UsersEntity)
@@ -43,8 +44,10 @@ router.get('/user-systems', async (req, res) => {
       user,
       role
     };
+    
+const activeSystems = systems.filter(system => system.is_active);
 
-    return res.json({ systems, userDetails });
+    return res.json({ activeSystems, userDetails });
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }
