@@ -32,10 +32,11 @@ router.get('/user-systems', async (req, res) => {
       .where('users.id = :id', { id: users_id })
       .getOne();
 
-    const role = await getRepository(RolesEntity)
+
+      const role = await getRepository(RolesEntity)
       .createQueryBuilder('roles')
-      .innerJoin('users_roles', 'rol', 'roles.id = rol.roles_id')
-      .where('rol.users_id = :id', { id: users_id })
+      .leftJoin('users', 'rol', 'roles.id = rol.roles_id')
+      .where('rol.id = :id', { id: users_id })
       .getMany();
 
     const userDetails = {

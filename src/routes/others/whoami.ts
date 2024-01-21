@@ -33,8 +33,8 @@ router.get('/whoami', async (req, res) => {
 
     const role = await getRepository(RolesEntity)
       .createQueryBuilder('roles')
-      .innerJoin('users_roles', 'rol', 'roles.id = rol.roles_id')
-      .where('rol.users_id = :id', { id: users_id })
+      .leftJoin('users', 'rol', 'roles.id = rol.roles_id')
+      .where('rol.id = :id', { id: users_id })
       .getMany();
       
 
