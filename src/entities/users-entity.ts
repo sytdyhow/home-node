@@ -46,11 +46,21 @@ export class UsersEntity extends BaseEntity{
     data_joined:Date
 
 
+    @Column({
+        name:'roles_id',
+        type:'integer',
+        nullable:false
+    })
+    roles_id:number
+
+
+
+
     @ManyToMany(()=>SystemsEntity,(systems)=>systems.users)
     systems:SystemsEntity[];
 
-    @ManyToMany(()=>RolesEntity,(roles)=>roles.userss)
-    roles:RolesEntity[];
+    // @ManyToMany(()=>RolesEntity,(roles)=>roles.userss)
+    // roles:RolesEntity[];
 
     // @ManyToMany(()=>RulesEntity,(rules)=>rules.userss)
     // rules:RulesEntity[];

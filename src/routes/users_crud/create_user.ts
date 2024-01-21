@@ -2,7 +2,6 @@ import express from "express";
 import { UsersEntity } from "../../entities/users-entity";
 import * as bcrypt from 'bcrypt'
 import { SystemsEntity } from "../../entities/systems-entity";
-import { RolesEntity } from "../../entities/roles-entity";
 
 const router = express.Router();
 
@@ -45,11 +44,7 @@ router.post('/users', async (req, res) => {
       return entity;
     }),
 
-    roles: Array.isArray(rolesId) ? rolesId.map((roleId: number) => {
-      const entity = new RolesEntity();
-      entity.id = roleId;
-      return entity;
-    }) : [],
+    roles_id: rolesId
   });
 
   try {

@@ -10,7 +10,7 @@ router.get('/users', async (req, res) => {
     // where: {
     //   is_active: true
     // },
-    relations: ["systems", "roles"]
+    relations: ["systems"]
   });
 
   const activeUsers = users.map((user) => {
@@ -21,7 +21,7 @@ router.get('/users', async (req, res) => {
       is_active: userWithoutPassword.is_active,
       data_joined: userWithoutPassword.data_joined,
       systems: userWithoutPassword.systems,
-      roles: userWithoutPassword.roles,
+      roles_id: userWithoutPassword.roles_id,
     };
   });
 

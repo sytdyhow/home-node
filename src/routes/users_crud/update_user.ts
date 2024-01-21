@@ -57,11 +57,7 @@ router.put('/users/:id', async (req, res) => {
           return entity;
         });
 
-        user.roles = rolesId.map((role: number) => {
-          const entity = new RolesEntity();
-          entity.id = role;
-          return entity;
-        });
+        user.roles_id = rolesId;
 
         await user.save();
 
