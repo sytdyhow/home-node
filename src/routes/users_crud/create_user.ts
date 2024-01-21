@@ -33,19 +33,22 @@ router.post('/users', async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const systemsArray = await SystemsEntity.find();
+  const systemObjectArray = system.map((system_id:any)=>systemsArray.find((inArraySystem)=>system_id===inArraySystem.id))
+
   const user = UsersEntity.create({
     username: username,
     password: hashedPassword, 
     is_active: is_active,
     data_joined: new Date(),
-    roles_id: role
+    roles_id: role,
+    systems:systemObjectArray
   });
-
-  const systemsArray = await SystemsEntity.find();
-  const systemObjectArray = system.map((system_id:any)=>systemsArray.find((inArraySystem)=>system_id===inArraySystem.id))
-
-  const roles = await RolesEntity.find()
-  const roleObject = roles.find((role)=>user.roles_id===role.id)
+  
+   
+  
+    const roles = await RolesEntity.find()
+    const roleObject = roles.find((role)=>user.roles_id===role.id)
   try {
     await user.save();
     return res.json({

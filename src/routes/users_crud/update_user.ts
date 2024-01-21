@@ -44,14 +44,16 @@ router.put('/users/:id', async (req, res) => {
           return res.status(400).json({ error: 'Passwords do not match' });
         }
       } 
+      const systemsArray = await SystemsEntity.find();
+      const systemObjectArray = systems.map((system_id:any)=>systemsArray.find((inArraySystem)=>system_id===inArraySystem.id))
       
       user.username = username;
       user.is_active = is_active;
       user.roles_id = role;
+      user.systems=systemObjectArray
       await user.save();
 
-      const systemsArray = await SystemsEntity.find();
-      const systemObjectArray = systems.map((system_id:any)=>systemsArray.find((inArraySystem)=>system_id===inArraySystem.id))
+     
 
       const roles = await RolesEntity.find()
       const roleObject = roles.find((role)=>user.roles_id===role.id)
