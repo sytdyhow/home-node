@@ -11,7 +11,7 @@ router.post('/users', async (req, res) => {
     password,
     is_active,
     system,
-    rolesId,
+    role,
   } = req.body;
 
   if (!username) {
@@ -26,7 +26,7 @@ router.post('/users', async (req, res) => {
     return res.status(400).json({ error: "Systems are missing. Please provide system IDs." });
   }
 
-  if (!rolesId || rolesId.length ===0) {
+  if (!role || role.length ===0) {
     return res.status(400).json({ error: "Roles are missing. Please provide role IDs." });
   }
 
@@ -44,7 +44,7 @@ router.post('/users', async (req, res) => {
       return entity;
     }),
 
-    roles_id: rolesId
+    roles_id: role
   });
 
   try {
