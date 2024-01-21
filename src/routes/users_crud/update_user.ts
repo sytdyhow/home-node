@@ -68,6 +68,7 @@ router.put('/users/:id', async (req, res) => {
         return res.json({
           success: true,
           body: {
+            id:user.id,
             username: user.username,
             role: roleObject,
             systems:user.systems,
