@@ -2,6 +2,7 @@
 
 import express from "express";
 import { UsersEntity } from "../../entities/users-entity";
+import { RolesEntity } from "../../entities/roles-entity";
 
 const router = express.Router();
 
@@ -13,15 +14,23 @@ router.get('/users', async (req, res) => {
     relations: ["systems"]
   });
 
+  const roles = await RolesEntity.find()
+  console.log(roles);
+  
+  
+
+  console.log("users",users);
+  
   const activeUsers = users.map((user) => {
     const { password, ...userWithoutPassword } = user;
+    const role = roles.find((role)=>userWithoutPassword.roles_id===role.id)
     return {
       id: user.id,
       username: userWithoutPassword.username,
       is_active: userWithoutPassword.is_active,
       data_joined: userWithoutPassword.data_joined,
       systems: userWithoutPassword.systems,
-      roles_id: userWithoutPassword.roles_id,
+      role: role,
     };
   });
 
