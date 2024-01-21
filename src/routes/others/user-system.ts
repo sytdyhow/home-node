@@ -19,7 +19,7 @@ router.get('/user-systems', async (req, res) => {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const users_id = decodedToken.id;
 
-    const systems = await getRepository(SystemsEntity)
+    const systemss = await getRepository(SystemsEntity)
       .createQueryBuilder('systems')
       .innerJoin('users_systems', 'us', 'systems.id = us.system_id')
       .where('us.user_id = :id', { id: users_id })
@@ -45,9 +45,9 @@ router.get('/user-systems', async (req, res) => {
       role
     };
     
-const activeSystems = systems.filter(system => system.is_active);
+const systems = systemss.filter(system => system.is_active);
 
-    return res.json({ activeSystems, userDetails });
+    return res.json({ systems, userDetails });
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }
