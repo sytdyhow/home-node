@@ -54,12 +54,13 @@ router.post('/users', async (req, res) => {
     return res.json({
       success: true,
       body: {
-        
+        id: user.id, 
         username: username,
+        is_active: is_active,
+        data_joined: new Date(),
         role: roleObject,
         systems:systemObjectArray,
-        is_active: is_active,
-        data_joined: new Date()
+        
       },
     });
   } catch (error) {
