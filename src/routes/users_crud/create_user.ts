@@ -16,7 +16,7 @@ router.post('/users', async (req, res) => {
   const token = auth?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ error: "Missing token" });
+    return res.status(401).json({ error: "Only user type admin can do this operation" });
   }
 
   try {
