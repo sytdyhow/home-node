@@ -14,9 +14,10 @@ router.post('/systems', upload.single('icon'), async (req, res) => {
 
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1];
+console.log("token:",token);
 
   if (!token) {
-    return res.status(401).json({ error: "Only user type admin can do this operation" });
+    return res.status(401).json({ error: "Missing token" });
   }
 
   try {
@@ -85,7 +86,7 @@ router.post('/systems', upload.single('icon'), async (req, res) => {
       }
 
 
-    return res.json({results: []});
+    return res.json({error: "Only admin can do this operation"});
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }
