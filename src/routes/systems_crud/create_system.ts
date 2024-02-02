@@ -14,7 +14,7 @@ router.post('/systems', upload.single('icon'), async (req, res) => {
 
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1];
-console.log("token:",token);
+
 
   if (!token) {
     return res.status(401).json({ error: "Missing token" });
