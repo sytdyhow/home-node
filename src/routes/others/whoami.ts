@@ -20,6 +20,7 @@ router.get('/whoami', async (req, res) => {
   try {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const users_id = decodedToken.id;
+   
 
     const user = await getRepository(UsersEntity)
       .createQueryBuilder('users')
@@ -27,7 +28,7 @@ router.get('/whoami', async (req, res) => {
       .where('users.id = :id', { id: users_id })
       .getOne();
 
-
+      
       const role_id = await getRepository(UsersEntity)
       .createQueryBuilder('users')
       .select(['users.roles_id'])
@@ -35,17 +36,14 @@ router.get('/whoami', async (req, res) => {
       .getOne();
 
    
-
-
     const role = await getRepository(RolesEntity)
       .createQueryBuilder('roles')
       .leftJoin('users', 'rol', 'roles.id = rol.roles_id')
       .where('rol.id = :id', { id: users_id })
       .getMany();
-      
-      const roleId=role[0].id;
-      const rolename=role[0].name
-      
+
+      const roleId=role[0]?.id;
+      const rolename=role[0]?.name
       
     
 

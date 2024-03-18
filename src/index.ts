@@ -45,8 +45,8 @@ const main = async () => {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [RulesEntity, UsersEntity, RolesEntity, SystemsEntity,UserLogsEntity],
-      synchronize: true,
+      entities: [ UsersEntity, RolesEntity, SystemsEntity,UserLogsEntity],
+      synchronize: false,
       
     });
 

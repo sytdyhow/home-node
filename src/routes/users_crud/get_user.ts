@@ -3,10 +3,62 @@
 import express from "express";
 import { UsersEntity } from "../../entities/users-entity";
 import { RolesEntity } from "../../entities/roles-entity";
-import { getRepository } from "typeorm";
+import { createQueryBuilder, getRepository } from "typeorm";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 const router = express.Router();
+
+
+router.get('/user/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const repo = await getRepository(UsersEntity)
+      .createQueryBuilder('users')
+      .select(['users.id', 'users.username'])
+      .where('users.id = :id', { id })
+      .getOne();
+
+    if (!repo) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.json({ results: repo });
+  } catch (error) {
+    console.error('Error retrieving user:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+router.get('/admins',async (req ,res)=>{
+  try{
+    const  roles=await getRepository(RolesEntity)
+    .createQueryBuilder('roles')
+    .select(['roles.id'])
+    .where('roles.name=:name',{name:'admin'})
+    .getOne();
+
+    const id =roles?.id
+
+    if (!roles) {
+      return res.status(404).json({ error: 'Role not found' });
+    }
+
+    const user =await getRepository(UsersEntity)
+    .createQueryBuilder('users')
+    .select(['users.id','users.username'])
+    .where('users.roles_id=:id',{id:id})
+    .getMany();
+  
+    return res.json({ results: user });
+  }catch (error) {
+    console.error('Error retrieving user:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+})
+
+
 
 router.get('/users', async (req, res) => {
 

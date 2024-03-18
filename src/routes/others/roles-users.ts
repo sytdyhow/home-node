@@ -22,7 +22,6 @@ router.get('/roles-users', async (req, res) => {
     const users_id = decodedToken.id;
 
    
-
     const role = await getRepository(RolesEntity)
       .createQueryBuilder('roles')
       .leftJoin('users', 'rol', 'roles.id = rol.roles_id')
@@ -30,6 +29,8 @@ router.get('/roles-users', async (req, res) => {
       .getMany();
 
 const roll= role.map((rl)=>rl.id);
+
+// const roll= role[0].id
 
 
 const users= await getRepository(UsersEntity)
