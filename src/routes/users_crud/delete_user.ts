@@ -1,5 +1,6 @@
 import express from "express";
 import { UsersEntity } from "../../entities/users-entity";
+import { UsersSystemsEntity } from "../../entities/users-systems-entity";
 
 const router = express.Router();
 
@@ -8,13 +9,14 @@ router.delete('/users/:id', async (req, res) => {
   
     try {
       const user = await UsersEntity.findOne({ where: { id: userId } });
-  
+
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
   
       await user.remove();
-  
+      await UsersSystemsEntity.delete({ user_id: userId });
+
       return res.json({ message: 'User deleted successfully' });
     } catch (error) {
       console.error(error);

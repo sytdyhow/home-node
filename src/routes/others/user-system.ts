@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/user-systems', async (req, res) => {
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1];
-  
+
   if (!token) {
     return res.status(401).json({ error: "Missing token" });
   }
@@ -24,8 +24,6 @@ router.get('/user-systems', async (req, res) => {
       .innerJoin('users_systems', 'us', 'systems.id = us.system_id')
       .where('us.user_id = :id', { id: users_id })
       .getMany();
-      
-
 
     const user = await getRepository(UsersEntity)
       .createQueryBuilder('users')
@@ -33,8 +31,7 @@ router.get('/user-systems', async (req, res) => {
       .where('users.id = :id', { id: users_id })
       .getOne();
 
-
-      const role = await getRepository(RolesEntity)
+    const role = await getRepository(RolesEntity)
       .createQueryBuilder('roles')
       .leftJoin('users', 'rol', 'roles.id = rol.roles_id')
       .where('rol.id = :id', { id: users_id })
@@ -44,8 +41,8 @@ router.get('/user-systems', async (req, res) => {
       user,
       role
     };
-    
-const systems = systemss.filter(system => system.is_active);
+
+    const systems = systemss.filter(system => system.is_active);
 
     return res.json({ systems, userDetails });
   } catch (error) {

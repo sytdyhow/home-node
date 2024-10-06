@@ -1,19 +1,15 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UsersEntity } from "./users-entity";
-
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
     name:'systems'
 })
 
 export class SystemsEntity extends BaseEntity{
-
     @PrimaryGeneratedColumn({
         name:'id',
         type:'integer'
     })
     id:number
-
 
     @Column({
         name:'name',
@@ -41,26 +37,10 @@ export class SystemsEntity extends BaseEntity{
     })
     is_active:boolean
 
-
-    
     @Column({ 
         name:'icon',
         nullable: true
      })
     icon: string;
-
-    @ManyToMany(()=>UsersEntity,(users)=>users.systems)
-    @JoinTable({
-        name:"users_systems",
-        joinColumn:{
-            name:'system_id',
-            referencedColumnName:'id'
-        },
-        inverseJoinColumn:{
-            name:'user_id',
-            referencedColumnName:'id',
-        },
-    })
-    users:UsersEntity[];
 
 }

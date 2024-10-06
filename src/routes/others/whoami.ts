@@ -1,11 +1,6 @@
 import express from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import LogsDatasource from "../../database/logsdb";
-import { PairsEntity } from "../../entities/pairs_entity";
-import { RulesEntity } from "../../entities/rules-entity";
-import { getRepository } from "typeorm";
 import { UsersEntity } from "../../entities/users-entity";
-import { RolesEntity } from "../../entities/roles-entity";
 
 const router = express.Router();
 
@@ -14,56 +9,34 @@ router.get('/whoami', async (req, res) => {
   const token = auth?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ error: "Missing token" });
+    return res.status(401).json({ message: "Missing token" });
   }
 
   try {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
-    const users_id = decodedToken.id;
-   
-
-    const user = await getRepository(UsersEntity)
-      .createQueryBuilder('users')
-      .select(['users.id', 'users.username'])
-      .where('users.id = :id', { id: users_id })
-      .getOne();
-
-      
-      const role_id = await getRepository(UsersEntity)
-      .createQueryBuilder('users')
-      .select(['users.roles_id'])
-      .where('users.id = :id', { id: users_id })
-      .getOne();
-
-   
-    const role = await getRepository(RolesEntity)
-      .createQueryBuilder('roles')
-      .leftJoin('users', 'rol', 'roles.id = rol.roles_id')
-      .where('rol.id = :id', { id: users_id })
-      .getMany();
-
-      const roleId=role[0]?.id;
-      const rolename=role[0]?.name
-      
-    
-
-       if(role_id?.roles_id===roleId && rolename==="admin"){
-      
-        let userMenu = {
-          label: "Admin Panel",
-          link: "/admin-panel/users",
-          icon: ""
-        }
-        return res.json({ user,role, userMenu });
+    const user_id = decodedToken.id;
+    const system_id = decodedToken?.system_id;
+    if(!system_id){
+      const user = await UsersEntity.findOneBy({id:user_id});
+      const {password, ...userWithoutPassword} = user != null ? user : {password:''}
+      return res.json(userWithoutPassword);
     }
 
+    const user = await UsersEntity.createQueryBuilder('users')
+      .select([
+        'users.id AS id',
+        'users.username AS username',
+        'users.roles_id AS home_role',
+        'users_systems.role_id AS system_role_id',
+      ])
+      .leftJoin('users_systems', 'users_systems', 'users_systems.user_id = users.id')
+      .where('users_systems.system_id = :system_id AND users.id = :user_id', { system_id, user_id })
+      .getRawOne();
 
-
-    return res.json({ user, role });
+      return res.json(user);
   } catch (error) {
-    return res.status(401).json({ error: "Invalid token" });
+    return res.status(401).json(error);
   }
-  
 });
 
 export {

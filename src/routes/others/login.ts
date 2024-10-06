@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { UsersEntity } from "../../entities/users-entity";
 const cors = require('cors');
 
-
 const router = express.Router();
 
 router.post('/login', cors() ,async (req, res) => {
@@ -27,28 +26,17 @@ router.post('/login', cors() ,async (req, res) => {
         });
     }
 
-    const accessToken = jwt.sign({  id: user.id }, "system");
+    const accessToken = jwt.sign({  id: user.id, }, 'system');
 
     return res.json({ 
         access: accessToken, 
      });
   } catch (error) {
-    console.error("Login error:", error);
-
-    // const createlogin = await UserLogsEntity.create({
-    //   username:username
-    // })
-    // await createlogin.save()
-
-
-    
+    console.error("Login error:", error);   
     return res.status(500).json({
         message: "Internal server error",
      });
   }
-
-  
-
 
 });
 
