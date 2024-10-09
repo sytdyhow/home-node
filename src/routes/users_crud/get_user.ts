@@ -75,7 +75,6 @@ router.get('/users', async (req, res) => {
     const system_id = decodedToken.system_id
     const user = await UsersEntity.findOneBy({ id: user_id });
     
-    
     if(system_id != null){
       const users = await UsersEntity.createQueryBuilder('users')
       .select([
