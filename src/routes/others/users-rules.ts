@@ -17,11 +17,7 @@ router.get('/users-rules', async (req, res) => {
   try {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const users_id = decodedToken.id;
-    
-   
-    
 
-      
       const rule_id = await LogsDatasource
       .getRepository(PairsEntity)    
       .createQueryBuilder('pairs_table')
@@ -31,17 +27,12 @@ router.get('/users-rules', async (req, res) => {
 
      const rulesIds= rule_id.map((rl)=>rl.rule_id)
 
-     
-    
-      
       const rules =await LogsDatasource
       .getRepository(RulesEntity)
       .createQueryBuilder('rules')
       .select(['rules.id','rules.rule_name'])
       .where('rules.id IN(:...ids)',{ids:rulesIds})
       .getMany()
- 
-
 
     return res.json({rules });
   } catch (error) {

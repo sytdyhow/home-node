@@ -30,12 +30,20 @@ import { Users_rules } from "./routes/others/users-rules";
 import { Roles_users } from "./routes/others/roles-users";
 import { UsersSystemsEntity } from "./entities/users-systems-entity";
 import { getToken } from "./routes/others/get-token";
+import { getSystemPermissionsRouter } from "./routes/permissions_crud/get_system_permissions";
+import { createPermissionRouter } from "./routes/permissions_crud/create_permissions";
+import { getPermissionsRouter } from "./routes/permissions_crud/get_permissions";
 
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
-
+import { PermissionsEntity } from "./entities/permissions-entity";
+import { PermissionContentEntity } from "./entities/permission-content-entity";
+import { PermissionsSystemsEntity } from "./entities/permissions-systems-entity";
+import { UsersPermissionsEntity } from "./entities/users-permissions-entity";
+import { deletePermissionrouter } from "./routes/permissions_crud/delete_permissions";
+import { updatePermissionsRouter } from "./routes/permissions_crud/update_permissions";
 
 // Load SSL certificate and key
 const options = {
@@ -58,7 +66,16 @@ const main = async () => {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [UsersEntity, RolesEntity, SystemsEntity, UserLogsEntity, UsersSystemsEntity],
+      entities: [UsersEntity, 
+                 RolesEntity, 
+                 SystemsEntity, 
+                 UserLogsEntity, 
+                 UsersSystemsEntity, 
+                 PermissionsEntity,
+                 PermissionContentEntity,
+                 PermissionsSystemsEntity,
+                 UsersPermissionsEntity
+                ],
       synchronize: false,
     });
 
@@ -67,29 +84,33 @@ const main = async () => {
     app.use(express.json());
 
     app.use(createRulerouter)
-    app.use(deleteRulerouter)
-    app.use(getRulerouter)
-    app.use(updateRuleRouter)
-    app.use(getRolerouter)
-    app.use(createRoleRouter)
-    app.use(deleteRolerouter)
-    app.use(updateRoleRouter)
-    app.use(getSystemrouter)
-    app.use(deleteSystemrouter)
-    app.use(createSystemrouter)
-    app.use(updateSystemRouter)
-    app.use(getUserRouter)
-    app.use(createUserRouter)
-    app.use(updateUserRouter)
-    app.use(deleteUserRouter)
-    app.use(loginRouter)
-    app.use(UserSystemRouter)
-    app.use(Whoami)
-    app.use(getToken)
-    app.use(Users_rules)
-    app.use(Roles_users)
-
-
+       .use(deleteRulerouter)
+       .use(getRulerouter)
+       .use(updateRuleRouter)
+       .use(getRolerouter)
+       .use(createRoleRouter)
+       .use(deleteRolerouter)
+       .use(updateRoleRouter)
+       .use(getSystemrouter)
+       .use(deleteSystemrouter)
+       .use(createSystemrouter)
+       .use(updateSystemRouter)
+       .use(getUserRouter)
+       .use(createUserRouter)
+       .use(updateUserRouter)
+       .use(deleteUserRouter)
+       .use(loginRouter)
+       .use(UserSystemRouter)
+       .use(Whoami)
+       .use(getToken)
+       .use(Users_rules)
+       .use(Roles_users)
+       .use(getSystemPermissionsRouter)
+       .use(createPermissionRouter)
+       .use(getPermissionsRouter)
+       .use(deletePermissionrouter)
+       .use(updatePermissionsRouter)
+       
     app_front.use(cors())
     app_front.use(express.json());
     // Serve static files from the dist directory
@@ -102,7 +123,7 @@ const main = async () => {
 
     // Handle all requests and send back the index.html file
     app_front.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     });
 
     const initializeDatasource = (DataSource: DataSource, message: string) => {
@@ -111,7 +132,7 @@ const main = async () => {
       }).catch((err) => {
         console.error("Error during Data Source initialization", err)
       })
-    } 
+    }
 
     const http_front_port = 8080;
     const https_front_port = 8443;
@@ -126,7 +147,7 @@ const main = async () => {
     //   console.log(`Running http frontend on port ${http_front_port}`);
     // });
 
-    https_server_front.listen(https_front_port, () => {  
+    https_server_front.listen(https_front_port, () => {
       console.log(`Running https frontend on port ${https_front_port}`);
     });
 

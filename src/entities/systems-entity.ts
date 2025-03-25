@@ -26,6 +26,13 @@ export class SystemsEntity extends BaseEntity{
     url:string
 
     @Column({
+        name:'permission_uri',
+        type:'varchar',
+
+    })
+    permission_uri:string
+
+    @Column({
         name:'description',
         type:'varchar'
     })

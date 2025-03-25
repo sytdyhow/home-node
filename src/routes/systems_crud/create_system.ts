@@ -27,7 +27,7 @@ router.post('/systems', upload.single('icon'), async (req, res) => {
     const user = await UsersEntity.findOneBy({id:user_id});    
 
     if (user?.roles_id === 0) {
-      const { name, url, description, icon, is_active } = req.body;
+      const { name, url, description, icon, is_active, permission_uri } = req.body;
 
       if (!name) {
         return res.status(400).json({ error: 'Name is required' });
@@ -45,13 +45,7 @@ router.post('/systems', upload.single('icon'), async (req, res) => {
         return res.status(400).json({ error: 'Icon is required' });
       }
 
-      const system = SystemsEntity.create({
-        name: name,
-        url: url,
-        description: description,
-        icon: icon,
-        is_active: is_active,
-      });
+      const system = SystemsEntity.create({ name, url, description, icon, is_active, permission_uri });
 
       try {
         await system.save();
