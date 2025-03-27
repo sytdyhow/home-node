@@ -1,11 +1,10 @@
 import express from "express";
 import { UsersEntity } from "../../entities/users-entity";
 import * as bcrypt from 'bcrypt'
-import { SystemsEntity } from "../../entities/systems-entity";
-import { RolesEntity } from "../../entities/roles-entity";
-import { getRepository, In } from "typeorm";
+import { In } from "typeorm";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { UsersSystemsEntity } from "../../entities/users-systems-entity";
+import { UsersPermissionsEntity } from "../../entities/users-permissions-entity";
+import { PermissionsEntity } from "../../entities/permissions-entity";
 
 const router = express.Router();
 
@@ -21,14 +20,14 @@ router.post('/users', async (req, res) => {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const user_id = decodedToken.id;
 
-    const user = await UsersEntity.findOneBy({id:user_id})
-
+    const user = await UsersEntity.findOneBy({ id: user_id })
     if (user?.roles_id === 0) {
       const {
         username,
         password,
         is_active,
         system,
+        permissions,
         role,
       } = req.body;
 
@@ -40,23 +39,24 @@ router.post('/users', async (req, res) => {
         return res.status(400).json({ error: "Password is missing. Please provide a password." });
       }
 
-      if (!system || system.length === 0) {
-        return res.status(400).json({ error: "Systems are missing. Please provide system IDs." });
+      // if (!system || system.length === 0) {
+      //   return res.status(400).json({ error: "Systems are missing. Please provide system IDs." });
+      // }
+
+      if (!permissions || permissions.length === 0) {
+        return res.status(400).json({ error: "Permissions are missing. Please provide permissions." });
       }
 
       if (role == null) {
         return res.status(400).json({ error: "Roles are missing. Please provide role IDs." });
       }
-
       const hashedPassword = await bcrypt.hash(password, 10);
+      // const systemsArray = await SystemsEntity.find({
+      //   where: {
+      //     id: In(system.map((system: any) => system.system_id))
+      //   }
+      // });
 
-      const systemsArray = await SystemsEntity.find({
-        where: {
-          id: In(system.map((system: any) => system.system_id))
-        }
-      });
-      console.log("systemsArray",systemsArray);
-      
       try {
         const user = UsersEntity.create({
           username: username,
@@ -65,38 +65,44 @@ router.post('/users', async (req, res) => {
           data_joined: new Date(),
           roles_id: role,
         });
-        console.log("user:",user);
-        
+
         const savedUser = await user.save();
-        console.log("savedUser", savedUser);
 
-        const newUsersSystemsArray = system.map((system: any) => {
+        // const newUsersSystemsArray = system.map((system: any) => {
+        //   return {
+        //     user_id: savedUser.id,
+        //     system_id: system.system_id,
+        //     role_id: system.role_id
+        //   }
+        // })
+
+        // const createdUsersSystems = await UsersSystemsEntity.save(newUsersSystemsArray);
+        // console.log("createdUsersSystems", createdUsersSystems);
+        
+        const usersPermissionsArray = permissions?.map((permission_id: any)=>{
           return {
-            user_id: savedUser.id,
-            system_id: system.system_id,
-            role_id: system.role_id
+            permission_id,
+            user_id: savedUser.id
           }
-        })
+        }) 
 
-        const createdUsersSystems = await UsersSystemsEntity.save(newUsersSystemsArray);
-        console.log("createdUsersSystems", createdUsersSystems);
+        await UsersPermissionsEntity.save(usersPermissionsArray);
+
+        const permissionsFromDb = await PermissionsEntity.find({where: { id: In(permissions)}});
 
         const { password, ...body } = savedUser
+
         return res.json({
           success: true,
-          body: {
+          body:{
             ...body,
-            systems: systemsArray.map((sys)=>{
-              return {
-                ...sys,
-                system_role_id: system?.find((s:any)=>s.system_id === sys.id)?.role_id
-            }}),
+            permissions: permissionsFromDb
           },
         });
       } catch (error) {
         // Check if the error is a duplicate entry error
         if (error.code === 'ER_DUP_ENTRY') {
-          return res.status(409).json({ error: "Username is already taken. Please choose a different username." });
+          return res.status(400).json({ error: "Username is already taken. Please choose a different username." });
         }
 
         // Return a generic error message for other types of errors
@@ -107,7 +113,7 @@ router.post('/users', async (req, res) => {
 
     return res.json({ error: "Only admin can do this operation" });
   } catch (error) {
-    return res.status(400).json({ error });
+    return res.status(400).json({ error: 'unknown error' });
   }
 
 

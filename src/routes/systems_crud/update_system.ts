@@ -34,8 +34,8 @@ router.put("/systems/:id", async (req, res) => {
       return res.status(400).json({ error: "Icon is required" });
     }
     system.icon = req.body.icon;
-
     system.is_active = req.body.is_active;
+    system.permission_uri = req.body.permission_uri;
 
     // Save the updated system
     await system.save();

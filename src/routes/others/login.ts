@@ -18,6 +18,10 @@ router.post('/login', cors() ,async (req, res) => {
          });
     }
 
+    if(user.roles_id === 2) return res.status(401).json({
+      access: false, message: "Siz galkan ulgamyna gözegçi hökmünde girizildiňiz" 
+     });
+
     const checkPassword = await bcrypt.compare(password, user.password);
 
     if (!checkPassword) {

@@ -3,9 +3,11 @@
 import express from "express";
 import { UsersEntity } from "../../entities/users-entity";
 import { RolesEntity } from "../../entities/roles-entity";
-import { createQueryBuilder, getRepository } from "typeorm";
+import { createQueryBuilder, getRepository, In } from "typeorm";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { SystemsEntity } from "../../entities/systems-entity";
+import { PermissionsEntity } from "../../entities/permissions-entity";
+import { UsersPermissionsEntity } from "../../entities/users-permissions-entity";
 
 const router = express.Router();
 
@@ -109,9 +111,12 @@ router.get('/users', async (req, res) => {
       .where('users_systems.user_id = :user_id', { user_id: user.id })
       const systems = await query.getRawMany();
 
+      const usersPermissionsArray = await UsersPermissionsEntity.findBy({user_id: user.id});
+      const permissions = usersPermissionsArray.map((perm: any)=>perm.permission_id);
+      const permissionsFromDb = await PermissionsEntity.find({where: { id: In(permissions)}});      
       return {
         ...userWithoutPassword,
-        systems
+        permissions: permissionsFromDb,
       };
     }));
 
