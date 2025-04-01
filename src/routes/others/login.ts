@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post('/login', cors() ,async (req, res) => {
   const { username, password } = req.body;
-
+ 
   try {
     const user = await UsersEntity.findOne({ where: { username } });
 

@@ -79,15 +79,27 @@ router.get('/users', async (req, res) => {
     
     if(system_id != null){
       const users = await UsersEntity.createQueryBuilder('users')
+      // .select([
+      //   'users.id AS id',
+      //   'users.username AS username',
+      //   'users.is_active AS is_active',
+      //   'users.data_joined AS data_joined',
+      //   'users.roles_id AS roles_id',
+      // ])  
+      // .leftJoin('users_systems', 'users_systems', 'users_systems.user_id = users.id') 
+      // .where('users_systems.system_id = :system_id', { system_id })
+      // .getRawMany();
+      // .createQueryBuilder('users')
       .select([
-        'users.id AS id',
-        'users.username AS username',
-        'users.is_active AS is_active',
-        'users.data_joined AS data_joined',
-        'users.roles_id AS roles_id',
-      ])  
-      .leftJoin('users_systems', 'users_systems', 'users_systems.user_id = users.id') 
-      .where('users_systems.system_id = :system_id', { system_id })
+        'users.username as username',
+        'users.id as id',
+      ])
+      .leftJoin('users_permissions', 'users_permissions', 'users.id = users_permissions.user_id')
+      .leftJoin('permissions_systems', 'permissions_systems', 'users_permissions.permission_id = permissions_systems.permission_id')
+      .leftJoin('systems', 'systems', 'systems.id = permissions_systems.system_id')
+      // .where('users.id = :id', { id: users_id })
+      .where('systems.id = :system_id', { system_id })
+      .andWhere('systems.is_active = TRUE')
       .getRawMany();
       
       return res.send({ results: users });

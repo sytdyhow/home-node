@@ -19,11 +19,29 @@ router.get('/user-systems', async (req, res) => {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const users_id = decodedToken.id;
 
-    const systemss = await getRepository(SystemsEntity)
-      .createQueryBuilder('systems')
-      .innerJoin('users_systems', 'us', 'systems.id = us.system_id')
-      .where('us.user_id = :id', { id: users_id })
-      .getMany();
+    // const systemss = await getRepository(SystemsEntity)
+    //   .createQueryBuilder('systems')
+    //   .innerJoin('users_systems', 'us', 'systems.id = us.system_id')
+    //   .where('us.user_id = :id', { id: users_id })
+    //   .getMany();
+
+    const givenSystems = await UsersEntity
+    .createQueryBuilder('users')
+    .select([
+      // 'users.username as username',
+      'systems.name as name',
+      'systems.url as url',
+      'systems.id as id',
+      'systems.description as description',
+    ])
+    .leftJoin('users_permissions', 'users_permissions', 'users.id = users_permissions.user_id')
+    .leftJoin('permissions_systems', 'permissions_systems', 'users_permissions.permission_id = permissions_systems.permission_id')
+    .leftJoin('systems', 'systems', 'systems.id = permissions_systems.system_id')
+    .where('users.id = :id', { id: users_id })
+    .andWhere('systems.is_active = TRUE')
+    .getRawMany();
+
+    // console.log("givenSystems:", givenSystems);
 
     const user = await getRepository(UsersEntity)
       .createQueryBuilder('users')
@@ -42,9 +60,9 @@ router.get('/user-systems', async (req, res) => {
       role
     };
 
-    const systems = systemss.filter(system => system.is_active);
+    // const systems = systemss.filter(system => system.is_active);
 
-    return res.json({ systems, userDetails });
+    return res.json({ systems: givenSystems, userDetails });
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }

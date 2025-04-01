@@ -1,8 +1,9 @@
 import express from "express";
-import { RolesEntity } from "../../entities/roles-entity";
-import { getRepository } from "typeorm";
+import axios from 'axios';
 import { UsersEntity } from "../../entities/users-entity";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { SystemsEntity } from "../../entities/systems-entity";
+import * as https from 'https';
 
 const router = express.Router();
 
@@ -23,9 +24,22 @@ router.get('/system_permissions', async (req, res) => {
     const user = await UsersEntity.findOneBy(({ id: user_id }))
 
     if (user?.roles_id === 0) {
-
-
-
+      const systems = await SystemsEntity.find();
+      const result = await Promise.all(systems?.map(async (system: any) => {
+        try {
+          const response = await axios.get(system.permission_url, {
+            httpsAgent: new https.Agent({
+              rejectUnauthorized: false, // Be careful with this in production!
+            })
+          })
+          const permissions = response.data;
+          return {system_id: system.id, system_name: system.name, permissions};
+        } catch (error) {
+          // console.error("Error while fetching permission of system", error);
+          return {system_id: system.id, system_name: system.name, permissions: []};
+        }
+      }))
+      return res.send(result);
       return res.send([
         {
           system_id: 43,
