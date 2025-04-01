@@ -35,8 +35,7 @@ router.put("/systems/:id", async (req, res) => {
     }
     system.icon = req.body.icon;
     system.is_active = req.body.is_active;
-    system.permission_uri = req.body.permission_uri;
-
+    system.permission_url = req.body.permission_url;
     // Save the updated system
     await system.save();
 

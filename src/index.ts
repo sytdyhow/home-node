@@ -76,7 +76,7 @@ const main = async () => {
                  PermissionsSystemsEntity,
                  UsersPermissionsEntity
                 ],
-      synchronize: false,
+      synchronize: true,
     });
 
     console.log("Connected to the database");

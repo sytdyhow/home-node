@@ -14,10 +14,11 @@ router.get('/get-token', async (req, res) => {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const user_id = decodedToken.id;
     const system_id = req.query?.system_id;
-    
+
     if(system_id == null) return res.status(400).json({message:'no-system-id-given'})
 
     const accessToken = jwt.sign({  id: user_id, system_id }, "system");
+
     return res.json(accessToken);
   } catch (error) {
     return res.status(401).json({error, message:'try catch error'});
