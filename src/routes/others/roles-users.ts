@@ -20,33 +20,27 @@ router.get('/roles-users', async (req, res) => {
   try {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const users_id = decodedToken.id;
-
-   
+    
     const role = await getRepository(RolesEntity)
       .createQueryBuilder('roles')
       .leftJoin('users', 'rol', 'roles.id = rol.roles_id')
       .where('rol.id = :id', { id: users_id })
       .getMany();
 
-const roll= role.map((rl)=>rl.id);
+    const roll = role.map((rl) => rl.id);
 
-// const roll= role[0].id
+    const users = await getRepository(UsersEntity)
+      .createQueryBuilder('users')
+      .innerJoin('users_roles', 'ur', 'users.id=ur.users_id')
+      .where('ur.roles_id=:id', { id: roll })
+      .getMany();
 
-
-const users= await getRepository(UsersEntity)
-.createQueryBuilder('users')
-.innerJoin('users_roles','ur','users.id=ur.users_id')
-.where('ur.roles_id=:id',{id:roll})
-.getMany();
-
-// console.log(users);
-
-const userr= users.map((us)=> {
-  return { id:us.id,
-          name:us.username
-         };   
-  });
-
+    const userr = users.map((us) => {
+      return {
+        id: us.id,
+        name: us.username
+      };
+    });
 
     return res.json({ userr });
   } catch (error) {

@@ -79,6 +79,7 @@ router.get('/users', async (req, res) => {
     
     if(system_id != null){
       const users = await UsersEntity.createQueryBuilder('users')
+      .distinct(true)
       // .select([
       //   'users.id AS id',
       //   'users.username AS username',

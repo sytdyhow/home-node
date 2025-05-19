@@ -10,12 +10,8 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
 router.post('/systems', upload.single('icon'), async (req, res) => {
-
-
   const auth = req.headers.authorization;
   const token = auth?.split(" ")[1];
-
-
   if (!token) {
     return res.status(401).json({ error: "Missing token" });
   }
@@ -24,13 +20,17 @@ router.post('/systems', upload.single('icon'), async (req, res) => {
     const decodedToken = jwt.verify(token, 'system') as JwtPayload;
     const user_id = decodedToken.id;
 
-    const user = await UsersEntity.findOneBy({id:user_id});    
+    const user = await UsersEntity.findOneBy({ id: user_id });
 
     if (user?.roles_id === 0) {
-      const { name, url, description, icon, is_active, permission_url } = req.body;
+      const { name, url, description, icon, is_active, permission_url, subtitle } = req.body;
 
       if (!name) {
         return res.status(400).json({ error: 'Name is required' });
+      }
+
+      if (!subtitle) {
+        return res.status(400).json({ error: 'Subtitle is required' });
       }
 
       if (!url) {
@@ -55,7 +55,7 @@ router.post('/systems', upload.single('icon'), async (req, res) => {
         });
       } catch (error) {
         console.error(error);
-        
+
         return res.status(500).json({ error: 'Failed to create system' });
       }
     }
@@ -64,8 +64,6 @@ router.post('/systems', upload.single('icon'), async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: "Invalid token" });
   }
-
-
 
 });
 

@@ -1,53 +1,58 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
-    name:'systems'
+    name: 'systems'
 })
 
-export class SystemsEntity extends BaseEntity{
+export class SystemsEntity extends BaseEntity {
     @PrimaryGeneratedColumn({
-        name:'id',
-        type:'integer'
+        name: 'id',
+        type: 'integer'
     })
-    id:number
+    id: number
 
     @Column({
-        name:'name',
-        type:'varchar',
-        nullable:false
+        name: 'name',
+        type: 'varchar',
+        nullable: false
     })
-    name:string
+    name: string
 
     @Column({
-        name:'url',
-        type:'varchar',
-
+        name: 'subtitle',
+        type: 'varchar',
+        nullable: false
     })
-    url:string
+    subtitle: string
 
     @Column({
-        name:'permission_url',
-        type:'varchar',
-
+        name: 'url',
+        type: 'varchar',
     })
-    permission_url:string
+    url: string
 
     @Column({
-        name:'description',
-        type:'varchar'
+        name: 'permission_url',
+        type: 'varchar',
     })
-    description:string
+    permission_url: string
 
     @Column({
-        name:'is_active',
-        type:'boolean'
+        name: 'description',
+        type: 'varchar'
     })
-    is_active:boolean
+    description: string
 
-    @Column({ 
-        name:'icon',
+    @Column({
+        name: 'is_active',
+        type: 'boolean'
+    })
+    is_active: boolean
+
+    @Column({
+        name: 'icon',
         nullable: true
-     })
+    })
     icon: string;
 
 }

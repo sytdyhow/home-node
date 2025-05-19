@@ -29,6 +29,7 @@ router.get('/whoami', async (req, res) => {
     }
     // system_id = Number(system_id);
     const user = await UsersEntity.createQueryBuilder('users')
+       .distinct(true)
       .select([
         'users.id AS id',
         'users.username AS username',

@@ -33,6 +33,10 @@ import { getToken } from "./routes/others/get-token";
 import { getSystemPermissionsRouter } from "./routes/permissions_crud/get_system_permissions";
 import { createPermissionRouter } from "./routes/permissions_crud/create_permissions";
 import { getPermissionsRouter } from "./routes/permissions_crud/get_permissions";
+import { createCategoryrouter } from "./routes/categories_crud/create_category";
+import { getCategoryrouter } from "./routes/categories_crud/get_category";
+import { deleteCategoryrouter } from "./routes/categories_crud/delete_category";
+import { updateCategoryRouter } from "./routes/categories_crud/update_category";
 
 import https from 'https';
 import http from 'http';
@@ -44,6 +48,9 @@ import { PermissionsSystemsEntity } from "./entities/permissions-systems-entity"
 import { UsersPermissionsEntity } from "./entities/users-permissions-entity";
 import { deletePermissionrouter } from "./routes/permissions_crud/delete_permissions";
 import { updatePermissionsRouter } from "./routes/permissions_crud/update_permissions";
+import { SystemCategoriesEntity } from "./entities/systems-categories";
+import { CategoriesEntity } from "./entities/categories";
+import { SystemCategoryRouter } from "./routes/others/system-categories";
 
 // Load SSL certificate and key
 const options = {
@@ -74,7 +81,9 @@ const main = async () => {
                  PermissionsEntity,
                  PermissionContentEntity,
                  PermissionsSystemsEntity,
-                 UsersPermissionsEntity
+                 UsersPermissionsEntity,
+                 SystemCategoriesEntity,
+                 CategoriesEntity,
                 ],
       synchronize: true,
     });
@@ -110,6 +119,11 @@ const main = async () => {
        .use(getPermissionsRouter)
        .use(deletePermissionrouter)
        .use(updatePermissionsRouter)
+       .use(createCategoryrouter)
+      .use(getCategoryrouter)
+      .use(deleteCategoryrouter)    
+      .use(updateCategoryRouter)
+      .use(SystemCategoryRouter)  
        
     app_front.use(cors())
     app_front.use(express.json());

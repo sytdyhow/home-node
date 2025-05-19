@@ -20,6 +20,11 @@ router.put("/systems/:id", async (req, res) => {
     }
     system.name = req.body.name;
 
+    if (!req.body.subtitle) {
+      return res.status(400).json({ error: "Name is required" });
+    }
+    system.subtitle = req.body.subtitle;
+
     if (!req.body.url) {
       return res.status(400).json({ error: "URL is required" });
     }

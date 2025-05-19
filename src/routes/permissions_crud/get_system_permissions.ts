@@ -24,10 +24,11 @@ router.get('/system_permissions', async (req, res) => {
     const user = await UsersEntity.findOneBy(({ id: user_id }))
 
     if (user?.roles_id === 0) {
-      const systems = await SystemsEntity.find();
+      const systems = await SystemsEntity.findBy({ is_active: true })
       const result = await Promise.all(systems?.map(async (system: any) => {
         try {
           const response = await axios.get(system.permission_url, {
+            timeout: 5000, // Set a timeout of 5 seconds
             httpsAgent: new https.Agent({
               rejectUnauthorized: false, // Be careful with this in production!
             })
@@ -40,65 +41,6 @@ router.get('/system_permissions', async (req, res) => {
         }
       }))
       return res.send(result);
-      return res.send([
-        {
-          system_id: 43,
-          system_name: "Goragçy",
-          permissions: [
-            {
-              label: 'Gurnap bilmek',
-              datakey: 'can_install_client',
-              datatype: 'boolean'
-            },
-            {
-              label: 'Ulanyjy goshup bilmek',
-              datakey: 'can_add_user',
-              datatype: 'boolean'
-            },
-            {
-              label: 'Kategoriýa üýtgedip bilmek',
-              datakey: 'can_mofidy_category',
-              datatype: 'boolean'
-            },
-            {
-              label: 'Enjama rugsat berip bilmedk',
-              datakey: 'can_allow_device',
-              datatype: 'boolean'
-            },
-            {
-              label: 'Kompýuterleri görüp bilmek',
-              datakey: 'can_see_computers',
-              datatype: 'boolean'
-            },
-            {
-              label: 'Enjamlary görüp bilmek',
-              datakey: 'can_see_devices',
-              datatype: 'boolean'
-            },
-            {
-              label: 'Loglary görüp bilmek',
-              datakey: 'can_see_logs',
-              datatype: 'boolean'
-            }
-          ]
-        },
-        {
-          system_id: 44,
-          system_name: "Gözegçi",
-          permissions: [
-            {
-              label: 'Admin panele girip bilmek',
-              datakey: 'can_enter_admin_panel',
-              datatype: 'boolean'
-            },
-            {
-              label: 'Otagyň içini üýtgedip bilmek',
-              datakey: 'can_modify_room',
-              datatype: 'boolean'
-            },
-          ]
-        }
-      ]);
     }
 
     return res.json([
